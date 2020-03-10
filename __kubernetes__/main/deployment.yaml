@@ -1,0 +1,58 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: main
+  labels:
+    app: main
+spec:
+  replicas: 10
+  strategy:
+      type: RollingUpdate
+      rollingUpdate:
+          maxUnavailable: 0
+          maxSurge: 2
+  selector:
+    matchLabels:
+        app: main
+  template:
+    metadata:
+      labels:
+        app: main
+    spec:
+      terminationGracePeriodSeconds: 280
+      containers:
+      - name: main
+        image: gcr.io/red-inspr/main
+        imagePullPolicy: IfNotPresent
+        ports:
+            - containerPort: 8080
+        env:
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+        resources:
+            requests:
+                cpu: 10m
+                memory: 30Mi
+            limits:
+                cpu: 150m
+                memory: 256Mi
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 5
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 30
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 5
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 30

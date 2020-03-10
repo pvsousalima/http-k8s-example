@@ -1,0 +1,18 @@
+apiVersion: skaffold/v1beta16
+kind: Config
+
+build:
+  artifacts:
+  - image: gcr.io/red-inspr/main
+    context: ./main
+
+  - image: gcr.io/red-inspr/secondary
+    context: ./secondary
+
+deploy:
+  kubectl:
+    manifests:
+    - ./__kubernetes__/*/*.yaml
+
+profiles:
+- name: gcb

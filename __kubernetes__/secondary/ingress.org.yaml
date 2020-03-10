@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: main-test
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+    rules:
+      - host: "main.example.com"
+        http:
+          paths:
+            - backend:
+                  serviceName: main-svc
+                  servicePort: 8080
+              path: /
+      - host: "secondary.example.com"
+        http:
+          paths:
+            - backend:
+                  serviceName: secondary-svc
+                  servicePort: 8080
+              path: /
